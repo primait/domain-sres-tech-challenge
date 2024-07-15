@@ -1,0 +1,83 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Access API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/users": {
+            "get": {
+                "summary": "Returns the list of users",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request successful"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "post": {
+                "summary": "Adds a user to the list",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "required": true,
+                        "type": "string",
+                        "description": "The name of the user"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "required": true,
+                        "type": "string",
+                        "description": "The email of the user"
+                    },
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "required": true,
+                        "type": "file",
+                        "description": "The file to upload"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User added to the list"
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "UserData": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
