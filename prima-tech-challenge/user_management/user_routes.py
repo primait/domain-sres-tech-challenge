@@ -1,10 +1,11 @@
 from flask import Blueprint, jsonify, request
-
+from werkzeug.utils import secure_filename
 from .user_service import create_user, get_all_users, uploader
 
 user_blueprint = Blueprint("user", __name__)
 
 REQUIRED_FIELDS = ["name", "email"]
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
 def validate_user_data(data):
@@ -27,6 +28,19 @@ def validate_user_data(data):
         if field not in data:
             return f"Missing required data: {field}", 400
     return None, None
+
+
+def allowed_file(filename):
+    """
+    Check if the file is allowed.
+    
+    Args:
+        filename (str): The filename to check.
+
+    Returns:
+        bool: True if allowed, False otherwise.
+    """
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @user_blueprint.route("/users", methods=["GET"])
@@ -55,32 +69,20 @@ def post_user():
         Tuple[Response, int]: JSON response indicating success or failure and HTTP status code.
     """
 
-    user_data = request.json
+    user_data = request.form.to_dict()
+    avatar = request.files.get('avatar')
     error_message, status_code = validate_user_data(user_data)
 
     if error_message:
         return jsonify({"error": error_message}), status_code
 
+    if avatar and allowed_file(avatar.filename):
+        filename = secure_filename(avatar.filename)
+        avatar_url = uploader(avatar, filename)
+        if not avatar_url:
+            return jsonify({"error": "Avatar upload failed"}), 500
+        user_data['avatar_url'] = avatar_url
+    else:
+        return jsonify({"error": "Invalid file type or no file uploaded"}), 400
+
     return create_user(user_data)
-
-
-@user_blueprint.route("/upload", methods=["POST"])
-def upload_file():
-    """
-    Endpoint to upload a file.
-
-    This endpoint handles POST requests to upload a file to an S3 bucket.
-    It checks if a file is included in the request before attempting the upload.
-
-    Returns:
-        Tuple[Response, int]: JSON response indicating success or failure and HTTP status code.
-    """
-
-    if "file" not in request.files:
-        return jsonify({"error": "No file part in the request"}), 400
-
-    file = request.files["file"]
-
-    message, status = uploader(file)
-
-    return message, status

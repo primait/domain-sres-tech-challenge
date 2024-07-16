@@ -23,22 +23,34 @@
         },
         "/user": {
             "post": {
-                "summary": "Adds an user to the list",
+                "summary": "Adds a user to the list",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
                     {
-                        "name": "user data",
-                        "in": "body",
-                        "description": "JSON data for the api",
+                        "name": "name",
+                        "in": "formData",
                         "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/UserData"
-                        }
+                        "type": "string",
+                        "description": "The name of the user"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "required": true,
+                        "type": "string",
+                        "description": "The email of the user"
+                    },
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "required": true,
+                        "type": "file",
+                        "description": "The file to upload"
                     }
                 ],
                 "responses": {
@@ -50,64 +62,6 @@
                     },
                     "500": {
                         "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/upload": {
-            "post": {
-                "tags": [
-                    "File Upload"
-                ],
-                "summary": "Upload a file to S3",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "parameters": [
-                    {
-                        "name": "file",
-                        "in": "formData",
-                        "required": true,
-                        "type": "file",
-                        "description": "The file to upload"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "File uploaded successfully",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string"
-                                },
-                                "file_url": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request data",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "error": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "error": {
-                                    "type": "string"
-                                }
-                            }
-                        }
                     }
                 }
             }

@@ -2,7 +2,6 @@ import os
 
 import boto3
 from flask import jsonify
-from werkzeug.utils import secure_filename
 
 from .utils import check_env_vars
 
@@ -92,7 +91,7 @@ def create_user(user_data):
         return jsonify({"error": str(e)}), 500
 
 
-def uploader(file):
+def uploader(file, filename):
     """
     Uploads a file to an S3 bucket.
 
@@ -107,9 +106,6 @@ def uploader(file):
         Tuple[Response, int]: JSON response indicating success or failure and HTTP status code.
     """
 
-    if file.filename == "":
-        return jsonify({"error": "No file selected for uploading"}), 400
-
     s3_client = boto3.client(
         "s3",
         region_name=AWS_REGION,
@@ -118,16 +114,10 @@ def uploader(file):
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     )
 
-    filename = secure_filename(file.filename)
-
     try:
         s3_client.upload_fileobj(
             file, S3_BUCKET, filename, ExtraArgs={"ACL": "public-read"}
         )
-        file_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{filename}"
-        return (
-            jsonify({"message": "File uploaded successfully", "file_url": file_url}),
-            200,
-        )
+        return f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{filename}"
     except Exception as e:
         return jsonify({"error": str(e)}), 500
