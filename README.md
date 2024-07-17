@@ -72,10 +72,16 @@ Next, containerise your Python API server using Docker, ensuring that it can be 
 
 ### Task 3: Infrastructure as Code (IaC)
 
-In this step, employ IaC principles and tools like Terraform or Pulumi to orchestrate the creation of the DynamoDB Table, S3 bucket and a role to access it. Provision all the essential resources, including roles and policies, required for the EKS cluster’s operation.
+In this step, employ IaC principles and tools like Terraform or Pulumi to orchestrate the creation of the DynamoDB Table, S3 bucket and a role to access it.
+As mentioned before, the application needs a set of AWS resources to work correctly, you can use both [Localstack CE](https://github.com/localstack/localstack) or an Official AWS Account (consider the Free Tier option).
 
 ### Task 4: Kubernetes Deployment with Helm
 
 Now, create a custom Helm Chart that includes templates for deploying your Python API server within the Kubernetes cluster. Define Helm Chart templates to encapsulate deployment, configuration, and scaling aspects of your application within the Kubernetes cluster. Focus on the reliability of the microservice (please consider autoscaling, healthchecks, and so on).
+
+You can test your Kubernetes Deployment with a local K8S cluster (e.g. [minikube](https://minikube.sigs.k8s.io/docs/)).
+If you're using [Localstack CE](https://github.com/localstack/localstack) for your AWS resources, configure bind addresses to `0.0.0.0` otherwise your AWS mocked services won't be reachable from your deployment.
+
+Also, please provision all the essential resources, including AWS IAM roles and policies for K8S ServiceAccounts, required for operating with an EKS cluster. You must skip the testing part (the EKS control plane costs even if you are using an AWS Free Tier, and isn’t supported by Localstack CE).
 
 Please provide clear and concise documentation explaining the solution architecture, including how to use the scripts and any prerequisites.
