@@ -82,6 +82,6 @@ Now, create a custom Helm Chart that includes templates for deploying your Pytho
 You can test your Kubernetes Deployment with a local K8S cluster (e.g. [minikube](https://minikube.sigs.k8s.io/docs/)).
 If you're using [Localstack CE](https://github.com/localstack/localstack) for your AWS resources, configure bind addresses to `0.0.0.0` otherwise your AWS mocked services won't be reachable from your deployment.
 
-Also, please provision all the essential resources, including AWS IAM roles and policies for K8S ServiceAccounts, required for operating with an EKS cluster. You must skip the testing part (the EKS control plane costs even if you are using an AWS Free Tier, and isn’t supported by Localstack CE).
+Also, please provision all the essential resources, including AWS IAM roles and policies for K8S ServiceAccounts, required for authenticating and operating with an EKS cluster. You must skip the testing part (the EKS control plane costs even if you are using an AWS Free Tier, and isn’t supported by Localstack CE), but the AWS resources should be coded with IaC.
 
 Please provide clear and concise documentation explaining the solution architecture, including how to use the scripts and any prerequisites.
