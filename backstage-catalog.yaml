@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "domain-sres-tech-challenge"
+  description: "This repo contains the template of a working Python application used for hiring SREs"
+spec:
+  type: "service"
+  lifecycle: production
+  owner: "group:default/team-domain-sre"
+  system: prima.it
